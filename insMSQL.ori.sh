@@ -6,12 +6,12 @@
 #####
 yum install libaio* -y &&\
 cd /downloads &&\
-wget http://mirrors.sohu.com/mysql/MySQL-5.7/mysql-5.7.18-linux-glibc2.5-x86_64.tar.gz &&\
-tar xf mysql-5.7.18-linux-glibc2.5-x86_64.tar.gz &&\
-mv mysql-5.7.18-linux-glibc2.5-x86_64 /application/mysql-5.7.18 &&\
+wget https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.19-linux-glibc2.12-x86_64.tar.gz &&\
+tar xf mysql-5.7.19-linux-glibc2.12-x86_64.tar.gz &&\
+mv mysql-5.7.19-linux-glibc2.12-x86_64 /application/mysql-5.7.19 &&\
 useradd -M mysql -s /sbin/nologin &&\
-cd /application && chown -R mysql.mysql mysql-5.7.18/
-ln -s /application/mysql-5.7.18/ /application/mysql &&\
+cd /application && chown -R mysql.mysql mysql-5.7.19/
+ln -s /application/mysql-5.7.19/ /application/mysql &&\
 cd /application/mysql/ &&\
 rm -f /etc/my.cnf &&\
 bin/mysqld --initialize --basedir=/application/mysql/ --datadir=/application/mysql/data/ --user=mysql &>> /tmp/mysql.log &&\
