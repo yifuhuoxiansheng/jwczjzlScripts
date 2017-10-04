@@ -4,6 +4,7 @@
 ###
 ####
 #####
+yum install libaio* -y &&\
 cd /downloads &&\
 wget https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.19-linux-glibc2.12-i686.tar.gz &&\
 tar xf mysql-5.7.19-linux-glibc2.12-i686.tar.gz &&\

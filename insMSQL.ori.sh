@@ -4,6 +4,7 @@
 ###
 ####
 #####
+yum install libaio* -y &&\
 cd /downloads &&\
 wget http://mirrors.sohu.com/mysql/MySQL-5.7/mysql-5.7.18-linux-glibc2.5-x86_64.tar.gz &&\
 tar xf mysql-5.7.18-linux-glibc2.5-x86_64.tar.gz &&\
