@@ -1,8 +1,9 @@
 #!/bin/sh
 pkill svnserve
 pkill svnserve
-mkdir /application/svndata /application/svnpasswd &&\
+mkdir /application/svndata /application/svnpasswd -p &&\
 svnserve -d -r /application/svndata/ &&\
+echo 'svnserve -d -r /application/svndata/' >> /etc/rc.local &&\
 svnadmin create /application/svndata/mysvnlib &&\
 cd /application/svndata/mysvnlib/conf/ &&\
 cp authz passwd /application/svnpasswd/ &&\
