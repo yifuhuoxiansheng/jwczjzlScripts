@@ -60,6 +60,9 @@ export HISTFILE="$HISTDIR/${LOGNAME}/${USER_IP}.hist.$DT"
 chmod 600 $HISTDIR/${LOGNAME}/*.hist* 2>/dev/null
 find $HISTDIR/${LOGNAME}/ -type f -mtime +30 -exec rm -rf {} \;
 # ------------------------------ MacBookPro Terminal ------------------------------
+sudo chmod a+w /etc/profile
+vi /etc/profile #添加下面的 PS 变量
 PS1='\033[01;33m\][\u@\h ]\033[01;34m\]\W \[\033[01;36m\]\$\[\033[00m\] '
+sudo chmod a-w /etc/profile
 sudo scutil --set HostName Spring
 
