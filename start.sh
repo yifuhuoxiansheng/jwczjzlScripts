@@ -65,4 +65,5 @@ vi /etc/profile #添加下面的 PS 变量
 PS1='\033[01;33m\][\u@\h ]\033[01;34m\]\W \[\033[01;36m\]\$\[\033[00m\] '
 sudo chmod a-w /etc/profile
 sudo scutil --set HostName Spring
-
+# 禁止 AdobeCreativeCloud 开机启动
+launchctl unload -w /Library/LaunchAgents/com.adobe.AdobeCreativeCloud.plist
