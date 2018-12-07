@@ -4,6 +4,8 @@ yum -y install epel-release
 yum -y install curl wget lsof nethogs nmap expect telnet unzip zip htop iotop tree gcc net-tools bash-completion mtr ntpdate git
 #chkconfig --list|grep 3:on|awk '{print $1}'|grep -Ev 'sshd|crond|rsyslog|network|udev-post|postfix|sysstat'|awk '{print "chkconfig "$1" off"}'|bash
 #echo '>/etc/udev/rules.d/70-persistent-net.rules' >> /etc/rc.local
+#添加静态路由
+#route add –host 172.16.2.0 gw 192.168.1.2
 echo '*/5 * * * * /usr/sbin/ntpdate cn.ntp.org.cn >/dev/null 2>&1' > /var/spool/cron/root 
 #修改 Linux 系统打开最大文件数
 echo "* soft nofile 102400" >> /etc/security/limits.conf
