@@ -17,6 +17,8 @@ cat /proc/sys/fs/file-nr
 # ---------------------------------防火墙----------------------------------------
 # 防火墙开放端口:
 firewall-cmd --add-port=2181/tcp --permanent
+# 机器禁 ping
+firewall-cmd --add-rich-rule='rule protocol value=icmp drop' --permanent
 # 防火墙白名单:
 firewall-cmd --permanent --add-rich-rule="rule family="ipv4" source address="192.168.1.10" port protocol="tcp" port="1521" accept"
 # 移除白名单:
