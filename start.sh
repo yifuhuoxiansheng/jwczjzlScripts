@@ -12,7 +12,8 @@ echo "* soft nofile 102400" >> /etc/security/limits.conf
 echo "* hard nofile 104800" >> /etc/security/limits.conf
 #查看现在打开的文件数
 cat /proc/sys/fs/file-nr 
-
+# tcpdump 抓包
+tcpdump -i em1 -X -s 0 host 101.200.52.240 -w /tmp/1217qxtongbt1.pcap
 # 设置 ssh 端口 DNS GSS 等
 # ---------------------------------防火墙----------------------------------------
 # 防火墙开放端口:
