@@ -20,9 +20,11 @@ firewall-cmd --add-port=2181/tcp --permanent
 # 机器禁 ping
 firewall-cmd --add-rich-rule='rule protocol value=icmp drop' --permanent
 # 防火墙白名单:
-firewall-cmd --permanent --add-rich-rule="rule family="ipv4" source address="192.168.1.10" port protocol="tcp" port="1521" accept"
+firewall-cmd --permanent --add-rich-rule="rule family='ipv4' source address='192.168.1.10' port protocol='tcp' port='1521' accept"
 # 移除白名单:
-firewall-cmd --permanent --remove-rich-rule="rule family="ipv4" source address="0.0.0.0/0" port protocol="tcp" port="1521" accept"
+firewall-cmd --permanent --remove-rich-rule="rule family='ipv4' source address='0.0.0.0/0' port protocol='tcp' port='1521' accept"
+# 禁止ip地址访问
+firewall-cmd --permanent --add-rich-rule="rule family='ipv4' source address='140.205.201.0/28' reject"
 # 添加默认区域放行:
 cp /usr/lib/firewall/servers/ssh.xml /etc/firewall/servers/ 再修改 /etc/firewall/zone/public.xml 
 # ---------------------------influxDB 备份/还原-----------------------------------
