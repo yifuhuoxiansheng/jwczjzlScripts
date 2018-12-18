@@ -15,6 +15,19 @@ cat /proc/sys/fs/file-nr
 # tcpdump 抓包
 tcpdump -i em1 -X -s 0 host 101.200.52.240 -w /tmp/1217qxtongbt1.pcap
 # 设置 ssh 端口 DNS GSS 等
+# systemctl 相关
+systemctl 是管制服务的主要工具,它整合了chkconfig 与 service功能于一体。
+systemctl is-enabled iptables.service   #查询防火墙是否开机启动
+systemctl restart sshd #有可能不需要加service
+systemctl is-enabled servicename.service #查询服务是否开机启动
+systemctl enable *.service #开机运行服务
+systemctl disable *.service #取消开机运行
+systemctl start *.service #启动服务
+systemctl stop *.service #停止服务
+systemctl restart *.service #重启服务
+systemctl reload *.service #重新加载服务配置文件
+systemctl status *.service #查询服务运行状态
+systemctl --failed #显示启动失败的服务
 # ---------------------------------防火墙----------------------------------------
 # 防火墙开放端口:
 firewall-cmd --add-port=2181/tcp --permanent
