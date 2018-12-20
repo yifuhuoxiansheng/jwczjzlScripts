@@ -111,3 +111,19 @@ firewall-cmd --permanent --add-rich-rule="rule family='ipv4' source address='140
 firewall-cmd --permanent --add-rich-rule="rule family='ipv4' source address='140.205.225.205/32' reject"
 firewall-cmd --permanent --add-rich-rule="rule family='ipv4' source address='140.205.225.195/32' reject"
 firewall-cmd --permanent --add-rich-rule="rule family='ipv4' source address='140.205.225.204/32' reject"
+---------------------------- rabbitMQ ------------------------------
+yum -y install socat
+wget http://www.rabbitmq.com/releases/erlang/erlang-19.0.4-1.el7.centos.x86_64.rpm &&\
+rpm-ivh erlang-19.0.4-1.el7.centos.x86_64.rpm &&\
+wget  http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.10/rabbitmq-server-3.6.10-1.el7.noarch.rpm &&\
+rpm -ivhrabbitmq-server-3.6.10-1.el7.noarch.rpm
+systemctl start rabbitmq-server
+mkdir /etc/rabbitmq
+rabbitmq-plugins enable rabbitmq_management
+firewall-cmd --permanent--add-port=15672/tcp
+firewall-cmd --permanent--add-port=5672/tcp
+firewall-cmd --reload
+rabbitmqctl add_user admin admin
+rabbitmqctl set_permissions -p /admin ".*" ".*" ".*"
+rabbitmqctl set_user_tags admin administrator
+https://blog.csdn.net/yexiaomodemo/article/details/80473411
