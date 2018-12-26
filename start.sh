@@ -1,5 +1,8 @@
 # ----------------------------startInstallOS------------------------------------
 sed s#=enforcing#=disabled#g /etc/selinux/config -i
+echo "UseDNS no" >> /etc/ssh/sshd_config
+sed -i 's#GSSAPIAuthentication yes#GSSAPIAuthentication no#g' /etc/ssh/sshd_config
+sed -i 's#^PasswordAuthentication yes#PasswordAuthentication no#g' /etc/ssh/sshd_config
 yum -y install epel-release
 yum -y install curl wget lsof nethogs nmap expect telnet unzip zip htop iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
 #chkconfig --list|grep 3:on|awk '{print $1}'|grep -Ev 'sshd|crond|rsyslog|network|udev-post|postfix|sysstat'|awk '{print "chkconfig "$1" off"}'|bash
