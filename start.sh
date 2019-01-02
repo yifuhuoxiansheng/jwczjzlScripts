@@ -130,3 +130,9 @@ rabbitmqctl add_user admin admin
 rabbitmqctl set_permissions -p /admin ".*" ".*" ".*"
 rabbitmqctl set_user_tags admin administrator
 https://blog.csdn.net/yexiaomodemo/article/details/80473411
+---------------------------- nginx ------------------------------
+server_names_hash_bucket_size 128;
+client_header_buffer_size 1m;
+client_body_buffer_size 1m;
+large_client_header_buffers 4 1m;
+client_max_body_size 50m;
