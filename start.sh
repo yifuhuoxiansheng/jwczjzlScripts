@@ -136,3 +136,6 @@ client_header_buffer_size 1m;
 client_body_buffer_size 1m;
 large_client_header_buffers 4 1m;
 client_max_body_size 50m;
+---------------------------- excel ------------------------------
+
+=MOD(ROW(),2)=0
