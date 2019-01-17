@@ -11,6 +11,13 @@ echo '*/5 * * * * /usr/sbin/ntpdate cn.ntp.org.cn >/dev/null 2>&1' > /var/spool/
 #修改 Linux 系统打开最大文件数
 echo "* soft nofile 102400" >> /etc/security/limits.conf
 echo "* hard nofile 104800" >> /etc/security/limits.conf
+#内核优化 vi /etc/sysctl.conf
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_tw_recycle = 1
+net.ipv4.tcp_fin_timeout = 30
+net.core.somaxconn = 4096
+# sysctl -p
 yum -y install epel-release
 yum -y install curl wget lsof nethogs nmap expect telnet unzip zip htop iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
 #查看现在打开的文件数
