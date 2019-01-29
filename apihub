@@ -1,0 +1,59 @@
+# 今天迁移了 apihub 老数据平台
+# 需要迁移数据库
+# mongodb 和 influxdb
+# 迁移方法都是按照 start.sh 里面进行操作的
+# ----------------------------------------下面开始正题:rabbitMQ 消息队列篇:------------------------------------------------
+# uri = "amqp://apihub:apihub@192.168.1.91:5672/apihub" 这样的 uri 需要使用命令创建 vhost 和 用户
+rabbitmqctl add_vhost apihub
+rabbitmqctl add_user apihub apihub
+set_permissions -p apihub apihub ".*" ".*" ".*"
+# rabbitmqctl set_user_tags {用户名} {权限}
+rabbitmqctl set_user_tags apihub administrator [这样才可以在web页面登陆]
+# 配置文件还有 queue = "charger" 所以需要在 web 页面登陆指定的 apihub 账户创建 charger 队列 queue.
+# ----------------------------------------下面开始 supervisor 篇:------------------------------------------------
+# 下面这个程序使用 linux ./ 直接运行即可 所以相应的 supervisor 配置文件为:
+[program:apihub]
+command=/u01/zwapi/bin/apihub
+directory=/u01/zwapi/bin
+redirect_stderr=true
+redirect_stdout=true
+autostart=true
+autorestart=true
+stderr_logfile=/u01/zwapi/log/apihub_out.log
+stdout_logfile=/u01/zwapi/log/apihub_err.log
+
+# 另一个:
+[program:charger]
+command=/u01/charger/charger
+directory=/u01/charger
+autostart=true
+autorestart=true
+redirect_stderr=true
+redirect_stdout=true
+stderr_logfile=/u01/charger/log/charger_out.log
+stdout_logfile=/u01/charger/log/charger_err.log
+stdout_logfile_maxbytes = 0
+stderr_logfile_maxbytes = 0
+
+# 还有一个:
+[program:influx]
+command=influxd -config /etc/influxdb/influxdb.conf
+autostart=true
+autorestart=true
+
+# 最后一个:
+[program:jk]
+command=/u01/jkbill/bin/jk
+directory=/u01/jkbill/bin
+redirect_stderr=true
+redirect_stdout=true
+autostart=true
+autorestart=true
+stderr_logfile=/u01/jkbill/log/jkbill_out.log
+stdout_logfile=/u01/jkbill/log/jkbill_err.log
+
+# mongodb url 写法
+# 单机
+url = "mongodb://192.168.1.93:37017/admin?"
+# 集群:副本集
+url = "mongodb://apihub:XUjianG4116179@192.168.1.181:37017,192.168.1.183:37017,192.168.1.184:37017/admin?"
