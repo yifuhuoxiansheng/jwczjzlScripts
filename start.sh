@@ -7,7 +7,7 @@ sed -i 's#^PasswordAuthentication yes#PasswordAuthentication no#g' /etc/ssh/sshd
 #echo '>/etc/udev/rules.d/70-persistent-net.rules' >> /etc/rc.local
 #添加静态路由
 #route add -net 172.16.2.0 netmask 255.255.255.0 gw 192.168.1.2
-echo '*/5 * * * * /usr/sbin/ntpdate cn.ntp.org.cn >/dev/null 2>&1' > /var/spool/cron/root 
+echo '*/5 * * * * /usr/sbin/ntpdate ntp1.aliyun.com >/dev/null 2>&1' > /var/spool/cron/root 
 #修改 Linux 系统打开最大文件数
 echo "* soft nofile 102400" >> /etc/security/limits.conf
 echo "* hard nofile 104800" >> /etc/security/limits.conf
