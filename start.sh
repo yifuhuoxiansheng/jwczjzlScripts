@@ -27,6 +27,7 @@ yum -y install curl wget lsof nethogs nmap expect telnet unzip zip htop iotop tr
 #查看现在打开的文件数
 cat /proc/sys/fs/file-nr 
 # tcpdump 抓包
+tcpdump -i em1 -X -s 0 -w /tmp/0320_99.pcap
 tcpdump -i em1 -X -s 0 host 101.200.52.240 -w /tmp/1217qxtongbt1.pcap
 # 设置 ssh 端口 DNS GSS 等
 # systemctl 相关
