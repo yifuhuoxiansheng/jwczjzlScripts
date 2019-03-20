@@ -26,6 +26,8 @@ yum -y install epel-release
 yum -y install curl wget lsof nethogs nmap expect telnet unzip zip htop iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
 #查看现在打开的文件数
 cat /proc/sys/fs/file-nr 
+#查看现在的 tcp 链接情况
+netstat -an|awk '/^tcp/{++S[$NF]}END{for (a in S)print a,S[a]}' 
 # tcpdump 抓包
 tcpdump -i em1 -X -s 0 -w /tmp/0320_99.pcap
 tcpdump -i em1 -X -s 0 host 101.200.52.240 -w /tmp/1217qxtongbt1.pcap
