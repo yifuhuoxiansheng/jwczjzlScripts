@@ -26,6 +26,10 @@ yum -y install epel-release
 yum -y install curl wget lsof nethogs nmap expect telnet unzip zip htop iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
 #查看现在打开的文件数
 cat /proc/sys/fs/file-nr 
+#修改字符集
+localedef -c -f UTF-8 -i zh_CN zh_CN.UTF-8
+export LC_ALL=zh_CN.UTF-8
+echo 'LANG="zh_CN.UTF-8"' > /etc/locale.conf
 #查看现在的 tcp 链接情况
 netstat -an|awk '/^tcp/{++S[$NF]}END{for (a in S)print a,S[a]}' 
 # tcpdump 抓包
