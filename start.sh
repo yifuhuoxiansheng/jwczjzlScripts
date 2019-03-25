@@ -36,6 +36,14 @@ netstat -an|awk '/^tcp/{++S[$NF]}END{for (a in S)print a,S[a]}'
 tcpdump -i em1 -X -s 0 -w /tmp/0320_99.pcap
 tcpdump -i em1 -X -s 0 host 101.200.52.240 -w /tmp/1217qxtongbt1.pcap
 # 设置 ssh 端口 DNS GSS 等
+#nginx
+vi /etc/yum.repos.d/nginx.repo
+
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/centos/7/$basearch/
+gpgcheck=0
+enabled=1
 # systemctl 相关
 systemctl 是管制服务的主要工具,它整合了chkconfig 与 service功能于一体。
 systemctl is-enabled iptables.service   #查询防火墙是否开机启动
