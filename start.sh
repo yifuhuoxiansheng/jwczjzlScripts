@@ -14,13 +14,19 @@ vi /etc/security/limits.conf
 *             hard    nofile         204800
 *             soft    nproc          204800
 *             hard    nproc          204800
-#内核优化 
+#内核优化 [~]
 vi /etc/sysctl.conf
 net.ipv4.tcp_syncookies = 1
 net.ipv4.tcp_tw_reuse = 1
 net.ipv4.tcp_tw_recycle = 0
 net.ipv4.tcp_fin_timeout = 30
 net.core.somaxconn = 40960
+#阿里云
+root soft nofile 65535
+root hard nofile 65535
+* soft nofile 65535
+* hard nofile 65535
+
 # sysctl -p
 yum -y install epel-release
 yum -y install curl wget lsof nethogs nmap expect telnet unzip zip htop iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
