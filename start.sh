@@ -29,7 +29,7 @@ root hard nofile 65535
 
 # sysctl -p
 yum -y install epel-release
-yum -y install curl wget lsof nethogs nmap expect telnet unzip zip htop tcpdump iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
+yum -y install curl wget lsof nethogs nmap expect telnet unzip zip htop tcpdump bind-utils iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
 #查看现在打开的文件数
 cat /proc/sys/fs/file-nr 
 #修改字符集
