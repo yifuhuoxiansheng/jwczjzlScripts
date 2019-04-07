@@ -30,6 +30,9 @@ htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
 #安装必备软件包
 yum install -y gcc glibc glibc-common make gettext automake autoconf wget openssl-devel net-snmp net-snmp-utils epel-release 
 yum install -y perl-Net-SNMP
+#没有用户的需要先创建用户
+#groupadd -r nagios
+#useradd -g nagios nagios
 #下载源码
 cd /tmp 
 wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.2.1.tar.gz 
