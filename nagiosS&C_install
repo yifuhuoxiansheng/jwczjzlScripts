@@ -294,3 +294,206 @@ killall nrpe
 /usr/local/nagios/bin/nrpe -d -c /usr/local/nagios/etc/nrpe.cfg
 #10,检测
 /usr/local/nagios/libexec/check_nrpe -H localhost -c check_mem
+#================================= nagios server 调整参数 ========================================
+#修改nagios.cfg
+vi /usr/local/nagios/etc/nagios.cfg
+#注释掉 cfg_file=/usr/local/nagios/etc/objects/localhost.cfg
+#添加下面两行内容&创建这两个文件
+cfg_file=/usr/local/nagios/etc/objects/services.cfg
+cfg_file=/usr/local/nagios/etc/objects/hosts.cfg
+cd /usr/local/nagios/etc/objects
+touch services.cfg
+head -51 localhost.cfg  > hosts.cfg
+chown -R nagios.nagios *
+#vi commands.cfg 进入后按shift+g切到结尾加入下面内容
+#-------------------------------------- 以下为文件内容--------------------------------------------
+# 'check_nrpe' command definition
+define command{
+        command_name    check_nrpe
+        command_line    $USER1$/check_nrpe -H $HOSTADDRESS$ -c $ARG1$
+        }
+
+# 'check_ping' command definition
+define command{
+        command_name    check-ping
+        command_line    $USER1$/check_ping -H $HOSTADDRESS$ -w 100.0,20% -c 200.0,50% -p 3 -t 2
+        }
+
+# 'check_http' command definition
+define command{
+        command_name    check-weburl
+        command_line    $USER1$/check_http -H $HOSTADDRESS$ $ARG1$ -w 5 -c 10
+        }
+
+# 'check_tcp' command definition
+define command{
+        command_name    check-tcp
+        command_line    $USER1$/check_tcp -H $HOSTADDRESS$ -p $ARG1$ -w 0.02 -c 0.1
+        }
+#-------------------------------------- 以上为文件内容--------------------------------------------
+#主机模板介绍（hosts.cfg）
+# host 
+define host{
+       host_name                       主机名  //被监控主机的名称,最好别带空格nagios-server
+       alias                           别名
+       address                         IP  //被监控主机的IP地址
+       check_command                   check-host-alive  //监控的命令check-host-alive,这个命令来自commands.cfg,用来监控主机是否存活
+       max_check_attempts              5  //检查失败后重试的次数
+       check_period                    24x7  //检查的时间段24x7,同样来自于我们之前在    timeperiods.cfg中定义的
+       contact_groups                  组名  //联系人组,上面在contactgroups.cfg中定义的组名
+       notification_interval           10  //提醒的间隔,每隔10秒提醒一次
+       notification_period             24x7  //提醒的周期, 24x7,同样来自于我们之前在timeperiods.cfg中定义的
+       notification_options            d,u,r  //指定什么情况下提醒,具体含义见之前contacts.cfg部分的介绍
+       }
+
+
+
+服务模板介绍（services.cfg）
+# service definition
+define service{
+       host_name               主机名  //被监控的主机,hosts.cfg中定义的
+       service_description     check-host-alive  //这个监控项目的描述(也可以说是这个项目的名称),可以空格,我们这里定义的是监控这个主机是不是存活
+       check_command           check-host-alive  //所用的命令,是commands.cfg中定义的
+       max_check_attempts      5
+       normal_check_interval   3
+       retry_check_interval    2
+       check_period            24x7  //监控的时间段,是timeperiods.cfg中定义的
+       notification_interval   10
+       notification_period     24x7  //通知的时间段, ,是timeperiods.cfg中定义的
+       notification_options    w,u,c,r  //在监控的结果是wucr时通知联系人,具体含义看前文.
+       contact_groups          组名  //联系人组,是contactgroups.cfg中定义的
+       }
+
+
+
+#hosts.cfg 主机模版配置 vi hosts.cfg +21 
+#11dd 删除后面的默认主机配置，添加测试用的 nagios server 和 nagios client
+
+# Define my test hosts
+
+###########192.168.137.101##################
+
+define host {
+        use                      linux-server
+        host_name                nagios
+        alias                    nagios
+        address                  192.168.137.101
+        check_command            check-host-alive
+        max_check_attempts        3
+        normal_check_interval     2
+        retry_check_interval      2
+        check_period              24x7
+        notification_interval     300
+        notification_period       24x7
+        notification_options      d,u,r
+        contact_groups            admins
+        process_perf_data         1
+}
+
+###########192.168.137.102##################
+
+define host {
+        use                      linux-server
+        host_name                client1
+        alias                    client1
+        address                  192.168.137.101
+        check_command            check-host-alive
+        max_check_attempts        3
+        normal_check_interval     2
+        retry_check_interval      2
+        check_period              24x7
+        notification_interval     300
+        notification_period       24x7
+        notification_options      d,u,r
+        contact_groups            admins
+        process_perf_data         1
+}
+
+#把监控的主机添加到主机组里面
+vi hosts.cfg +76
+define hostgroup{
+        hostgroup_name  linux-servers ; The name of the hostgroup
+        alias           Linux Servers ; Long name of the group
+        members         nagios,client1     ; Comma separated list of hosts that belong to this group
+        }
+
+
+
+#服务模版配置 vi services.cfg
+
+###########192.168.137.101##################
+
+define service{
+        use                     generic-service
+        host_name               nagios
+        service_description     Load
+        check_command           check_nrpe!check_load       #这里的check_nrpe不是服务端/usr/local/nagios/libexec/check_nrpe,而是command.cfg里定义的命令
+        }
+
+define service{
+        use                     generic-service
+        host_name               nagios
+        service_description     Disk
+        check_command           check_nrpe!check_disk
+        }
+
+define service{
+        use                     generic-service
+        host_name               nagios
+        service_description     memory
+        check_command           check_nrpe!check_mem
+        }
+define service{
+        use                     generic-service
+        host_name               nagios
+        service_description     Ping
+        check_command           check-ping!192.168.137.101
+}
+
+define service{
+        use                     generic-service
+        host_name               nagios
+        service_description     port_3306
+        check_command           check-tcp!3306
+}
+
+###########192.168.137.102##################
+
+define service{
+        use                     generic-service
+        host_name               client1
+        service_description     Load
+        check_command           check_nrpe!check_load
+        }
+
+define service{
+        use                     generic-service
+        host_name               client1
+        service_description     Disk
+        check_command           check_nrpe!check_disk
+        }
+
+define service{
+        use                     generic-service
+        host_name               client1
+        service_description     memory
+        check_command           check_nrpe!check_mem
+        }
+define service{
+    use             generic-service
+        host_name               client1
+        service_description     Ping
+        check_command           check-ping!192.168.137.101
+}
+define service{
+        use                     generic-service
+        host_name               client1
+        service_description     port_3306
+        check_command           check-tcp!3306
+}
+
+#重启 nagios 
+systemctl restart nagios
+
+#----------------------------- influxDB+grafana -------------------------------
+
