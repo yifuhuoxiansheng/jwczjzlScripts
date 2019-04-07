@@ -31,7 +31,7 @@ htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
 #----------------------------- 安装插件 nagios plugins -------------------------------
 #安装必备软件包
 yum install -y gcc glibc glibc-common make gettext automake autoconf wget openssl-devel net-snmp net-snmp-utils epel-release 
-yum install -y perl-Net-SNMP
+yum install -y perl-Net-SNMP perl-devel perl-CPAN
 #没有用户的需要先创建用户
 #groupadd -r nagios
 #useradd -g nagios nagios
