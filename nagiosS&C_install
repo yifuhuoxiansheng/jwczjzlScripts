@@ -59,7 +59,12 @@ make install-daemon
 #创建配置
 make install-daemon-config
 #复制简单配置
+mkdir /usr/local/nagios/etc/
 cp sample-config/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
+#启动&开机启动
+/usr/local/nagios/bin/nrpe -d -c /usr/local/nagios/etc/nrpe.cfg 
+echo "/usr/local/nagios/bin/nrpe -d -c /usr/local/nagios/etc/nrpe.cfg" >> /etc/rc.local
+chmod +x /etc/rc.d/rc.local
 
 #================================= nagios client ========================================
 #1,安装 nagios plugins
