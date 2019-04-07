@@ -294,7 +294,3 @@ killall nrpe
 /usr/local/nagios/bin/nrpe -d -c /usr/local/nagios/etc/nrpe.cfg
 #10,检测
 /usr/local/nagios/libexec/check_nrpe -H localhost -c check_mem
-
-
-#3,vi /usr/local/nagios/etc/nrpe.cfg 修改本机和服务器ip可以访问脚本
-#3,vi /usr/local/nagios/etc/nrpe.cfg 修改本机和服务器ip可以访问
