@@ -72,7 +72,7 @@ chmod +x /etc/rc.d/rc.local
 #1,安装 nagios plugins
 #2,安装 nrpe
 #3,vi /usr/local/nagios/etc/nrpe.cfg 修改本机和服务器ip可以访问
-allowed_hosts=127.0.0.1,::1 => 【修改为】 allowed_hosts=127.0.0.1,::1,1192.168.137.101
+allowed_hosts=127.0.0.1,::1 => 【修改为】 allowed_hosts=127.0.0.1,::1,192.168.137.101
 #5,注释下面的内容
 command[check_users]=/usr/local/nagios/libexec/check_users -w 5 -c 10
 command[check_load]=/usr/local/nagios/libexec/check_load -r -w .15,.10,.05 -c .30,.25,.20
