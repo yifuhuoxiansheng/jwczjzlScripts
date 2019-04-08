@@ -1,0 +1,125 @@
+InfluxDB：时序数据库保存性能数据
+Nagflux：将性能数据从nagios导入到InfluxDB的程序
+Grafana：基于web的分析平台，可以将性能数据库从InfluxDB展示到web，实现数据可视化
+Histou：为Grafana添加上Nagios性能数据创建的图表
+--------------------------------------------------------------------------------------------
+#安装 grafana
+cd /tmp
+wget --no-check-certificate -O grafana.rpm https://dl.grafana.com/oss/release/grafana-6.1.1-1.x86_64.rpm
+yum localinstall grafana.rpm
+systemctl enable --now grafana-server.service
+#安装 Nagflux 需要先安装 go 环境
+yum install -y golang git
+export GOPATH=$HOME/gorepo
+mkdir $GOPATH
+go get -v -u github.com/griesbacher/nagflux
+go build github.com/griesbacher/nagflux
+mkdir -p /opt/nagflux
+cp $GOPATH/bin/nagflux /opt/nagflux/
+mkdir -p /usr/local/nagios/var/spool/nagfluxperfdata
+chown nagios:nagios /usr/local/nagios/var/spool/nagfluxperfdata
+cp $GOPATH/src/github.com/griesbacher/nagflux/nagflux.service /usr/lib/systemd/system/
+chmod +x /usr/lib/systemd/system/nagflux.service
+systemctl daemon-reload
+#创建目录
+mkdir -p /usr/local/nagios/var /usr/local/nagios/var/nagflux /usr/local/nagios/var/spool/nagfluxperfdata
+#配置
+vi /opt/nagflux/config.gcfg
+---------------------------------------以下为config.gcfg内容-------------------------------------------
+[main]
+NagiosSpoolfileFolder = "/usr/local/nagios/var/spool/nagfluxperfdata"
+NagiosSpoolfileWorker = 1
+InfluxWorker = 2
+MaxInfluxWorker = 5
+DumpFile = "nagflux.dump"
+NagfluxSpoolfileFolder = "/usr/local/nagios/var/nagflux"
+FieldSeparator = "&"
+BufferSize = 10000
+FileBufferSize = 65536
+DefaultTarget = "all"
+[Log]
+LogFile = ""
+MinSeverity = "INFO"
+[InfluxDBGlobal]
+CreateDatabaseIfNotExists = true
+NastyString = ""
+NastyStringToReplace = ""
+HostcheckAlias = "hostcheck"
+[InfluxDB "nagflux"]
+Enabled = true
+Version = 1.0
+Address = "http://127.0.0.1:8086"
+Arguments = "precision=ms&u=root&p=root&db=nagflux"
+StopPullingDataIfDown = true
+[InfluxDB "fast"]
+Enabled = false
+Arguments = "precision=ms&u=root&p=root&db=fast"
+StopPullingDataIfDown = false
+---------------------------------------以上为config.gcfg内容-------------------------------------------
+#启动
+systemctl enable --now nagflux.service
+#安装influxDB
+cd /tmp
+wget --no-check-certificate -O influxdb.rpm https://dl.influxdata.com/influxdb/releases/influxdb-1.7.5.x86_64.rpm
+rpm -ivh influxdb.rpm
+systemctl enable --now influxdb.service
+#创建数据库
+create database nagflux
+
+#--------------------------------------以下我不知道为啥用 histou------------------------------------------
+cd /tmp
+wget --no-check-certificate -O histou.tar.gz https://github.com/Griesbacher/histou/archive/v0.4.3.tar.gz
+mkdir -p /var/www/html/histou
+cd /var/www/html/histou
+tar xzf /tmp/histou.tar.gz --strip-components 1
+cp histou.ini.example histou.ini
+cp histou.js /usr/share/grafana/public/dashboards/
+#vi /usr/local/nagios/etc/nagios.cfg 在最后添加如下字段
+
+process_performance_data=1
+host_perfdata_file=/usr/local/nagios/var/host-perfdata
+host_perfdata_file_template=DATATYPE::HOSTPERFDATA\tTIMET::$TIMET$\tHOSTNAME::$HOSTNAME$\tHOSTPERFDATA::$HOSTPERFDATA$\tHOSTCHECKCOMMAND::$HOSTCHECKCOMMAND$
+host_perfdata_file_mode=a
+host_perfdata_file_processing_interval=15
+host_perfdata_file_processing_command=process-host-perfdata-file-nagflux
+service_perfdata_file=/usr/local/nagios/var/service-perfdata
+service_perfdata_file_template=DATATYPE::SERVICEPERFDATA\tTIMET::$TIMET$\tHOSTNAME::$HOSTNAME$\tSERVICEDESC::$SERVICEDESC$\tSERVICEPERFDATA::$SERVICEPERFDATA$\tSERVICECHECKCOMMAND::$SERVICECHECKCOMMAND$
+service_perfdata_file_mode=a
+service_perfdata_file_processing_interval=15
+service_perfdata_file_processing_command=process-service-perfdata-file-nagflux
+
+#vi /usr/local/nagios/etc/objects/commands.cfg 最后添加如下内容
+
+define command{
+        command_name process-host-perfdata-file-nagflux
+        command_line /bin/mv /usr/local/nagios/var/host-perfdata /usr/local/nagios/var/spool/nagfluxperfdata/$TIMET$.perfdata.host
+        }
+define command{
+        command_name process-service-perfdata-file-nagflux
+        command_line /bin/mv /usr/local/nagios/var/service-perfdata /usr/local/nagios/var/spool/nagfluxperfdata/$TIMET$.perfdata.service
+        }
+
+
+#Histou 配置
+grafana调用的js文件/usr/share/grafana/public/dashboards/histou.js找到
+var url = 'http://localhost/histou/';
+#将localhost换成浏览器能访问到histou的地址
+sed -i 's/localhost/192.168.4.22/g' /usr/share/grafana/public/dashboards/histou.js
+#验证histou是否可以获取到数据
+curl -G "http://localhost/histou/?host=localhost&service=PING"
+#验证grafana是否可以取到数据
+http://nagios_server:3000/dashboard/script/histou.js?host=host_object&service=service_object
+nagios_server = grafana的地址
+3000 = grafana的端口
+host_object = 主机对象
+service_object = 服务名称
+#修改nagios的模板，加入图形链接
+define host {
+　　name host-grafana
+　　action_url http://nagios_server:3000/dashboard/script/histou.js?host=$HOSTNAME$
+　　register 0
+}
+define service {
+　　name service-grafana
+　　action_url http://nagios_server:3000/dashboard/script/histou.js?host=$HOSTNAME$&service=$SERVICEDESC$
+}
