@@ -1,0 +1,8 @@
+前往 https://developer.android.com/studio/releases/platform-tools 下载 SDK Platform-Tools for Mac
+解压后:
+mkdir ~/.android-sdk-macosx
+mv Downloads/platform-tools/ ~/.android-sdk-macosx/platform-tools
+echo 'export PATH=$PATH:~/.android-sdk-macosx/platform-tools/' >> ~/.bash_profile
+source ~/.bash_profile
+
+
