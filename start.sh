@@ -10,10 +10,12 @@ sed -i 's#^PasswordAuthentication yes#PasswordAuthentication no#g' /etc/ssh/sshd
 echo '*/5 * * * * /usr/sbin/ntpdate ntp1.aliyun.com >/dev/null 2>&1' > /var/spool/cron/root 
 #修改 Linux 系统打开最大文件数
 vi /etc/security/limits.conf
-*             soft    nofile         204800
-*             hard    nofile         204800
-*             soft    nproc          204800
-*             hard    nproc          204800
+#阿里云
+root soft nofile 65535
+root hard nofile 65535
+* soft nofile 65535
+* hard nofile 65535
+
 #内核优化 [~]
 vi /etc/sysctl.conf
 net.ipv4.tcp_syncookies = 1
@@ -21,13 +23,8 @@ net.ipv4.tcp_tw_reuse = 1
 net.ipv4.tcp_tw_recycle = 0
 net.ipv4.tcp_fin_timeout = 30
 net.core.somaxconn = 40960
-#阿里云
-root soft nofile 65535
-root hard nofile 65535
-* soft nofile 65535
-* hard nofile 65535
-
-# sysctl -p
+#sysctl -p
+#安装必备软件
 yum -y install epel-release
 yum -y install curl wget lsof vim nethogs nmap expect telnet unzip zip htop tcpdump bind-utils iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
 #替换vi为vim
@@ -37,10 +34,12 @@ ln -s /usr/bin/vim /usr/bin/vi
 
 #查看现在打开的文件数
 cat /proc/sys/fs/file-nr 
+
 #修改字符集
 localedef -c -f UTF-8 -i zh_CN zh_CN.UTF-8
 export LC_ALL=zh_CN.UTF-8
 echo 'LANG="zh_CN.UTF-8"' > /etc/locale.conf
+
 #查看现在的 tcp 链接情况
 netstat -an|awk '/^tcp/{++S[$NF]}END{for (a in S)print a,S[a]}' 
 # tcpdump 抓包
