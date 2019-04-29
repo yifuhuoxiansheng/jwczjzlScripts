@@ -29,7 +29,12 @@ root hard nofile 65535
 
 # sysctl -p
 yum -y install epel-release
-yum -y install curl wget lsof nethogs nmap expect telnet unzip zip htop tcpdump bind-utils iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
+yum -y install curl wget lsof vim nethogs nmap expect telnet unzip zip htop tcpdump bind-utils iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
+#替换vi为vim
+mv /usr/bin/vi /usr/bin/vi.ori
+chmod a-x /usr/bin/vi.ori
+ln -s /usr/bin/vim /usr/bin/vi
+
 #查看现在打开的文件数
 cat /proc/sys/fs/file-nr 
 #修改字符集
