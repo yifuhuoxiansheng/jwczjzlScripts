@@ -1,3 +1,18 @@
+cat > /etc/yum.repos.d/nginx.repo << EOF
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/centos/7/$basearch/
+gpgcheck=0
+enabled=1
+EOF
+yum -y install nginx
+
+
+
+
+
+
+
 #!/bin/bash
 ##
 ###
@@ -14,4 +29,5 @@ if [ $? -ne 0 ]; then echo 'compile Error!'; exit -1; fi &&\
 make && make install &>> /tmp/insNginx.log &&\
 if [ $? -ne 0 ]; then echo 'make or install Error!'; exit -1; fi &&\
 echo 'over............!'
+
 
