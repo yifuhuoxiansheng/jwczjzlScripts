@@ -36,10 +36,18 @@ cp -r /usr/share/zabbix/* /home/wwwroot/zabbix/ && chown -R nginx.nginx /home/ww
 
 
 
-[mysql 5.7 yum ]
+[mysql 5.6 yum ]
 
 wget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
 rpm -ivh mysql-community-release-el7-5.noarch.rpm
 yum install mysql-community-server -y
+systemctl start mysql
+mysql_secure_installation
+
+[mysql 5.6 yum ]
+
+wget -i -c http://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm
+yum -y install mysql57-community-release-el7-10.noarch.rpm
+yum -y install mysql-community-server
 systemctl start mysql
 mysql_secure_installation
