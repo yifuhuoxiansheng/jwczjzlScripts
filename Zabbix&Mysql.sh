@@ -44,7 +44,7 @@ yum install mysql-community-server -y
 systemctl start mysql
 mysql_secure_installation
 
-[mysql 5.6 yum ]
+[mysql 5.7 yum ]
 
 wget -i -c http://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm
 yum -y install mysql57-community-release-el7-10.noarch.rpm
