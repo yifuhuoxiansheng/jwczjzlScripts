@@ -55,6 +55,8 @@ baseurl=http://nginx.org/packages/centos/7/$basearch/
 gpgcheck=0
 enabled=1
 ------------------------------
+#nohup
+nohup ./gogs web >/dev/null 2>&1 &
 #linux 切割大文件
 split -b 100m
 # systemctl 相关
