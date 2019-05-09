@@ -72,6 +72,8 @@ systemctl restart *.service #重启服务
 systemctl reload *.service #重新加载服务配置文件
 systemctl status *.service #查询服务运行状态
 systemctl --failed #显示启动失败的服务
+#ESXI 修改hostname
+esxcfg-advcfg -s hostname /Misc/HostName
 # ---------------------------------防火墙----------------------------------------
 # 防火墙开放端口:
 firewall-cmd --add-port=2181/tcp --permanent
