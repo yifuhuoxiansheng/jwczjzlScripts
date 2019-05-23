@@ -26,7 +26,7 @@ net.core.somaxconn = 40960
 #sysctl -p
 #安装必备软件
 yum -y install epel-release
-yum -y install curl wget lsof vim nethogs nmap expect telnet unzip zip htop tcpdump bind-utils iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
+yum -y install curl wget lsof vim nethogs nmap expect telnet traceroute unzip zip htop tcpdump bind-utils iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
 #替换vi为vim
 mv /usr/bin/vi /usr/bin/vi.ori
 chmod a-x /usr/bin/vi.ori
