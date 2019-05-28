@@ -42,6 +42,8 @@ echo 'LANG="zh_CN.UTF-8"' > /etc/locale.conf
 
 #查看现在的 tcp 链接情况
 netstat -an|awk '/^tcp/{++S[$NF]}END{for (a in S)print a,S[a]}' 
+# curl POST 请求 Json
+curl -X POST --data '{"api":"mortgage","sign":"RDPLbwhuYQroV2KW94+m43wPvijMT1SH8JXFyTfZs/I="}' http://127.0.0.1:7891/api/v1
 # tcpdump 抓包
 tcpdump -i em1 -X -s 0 -w /tmp/0320_99.pcap
 tcpdump -i em1 -X -s 0 host 101.200.52.240 -w /tmp/1217qxtongbt1.pcap
