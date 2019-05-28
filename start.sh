@@ -1,13 +1,17 @@
-# ----------------------------startInstallOS------------------------------------
+# ----------------------------开始安装------------------------------------
+
 sed s#=enforcing#=disabled#g /etc/selinux/config -i
 echo "UseDNS no" >> /etc/ssh/sshd_config
 sed -i 's#GSSAPIAuthentication yes#GSSAPIAuthentication no#g' /etc/ssh/sshd_config
 sed -i 's#^PasswordAuthentication yes#PasswordAuthentication no#g' /etc/ssh/sshd_config
+
 #chkconfig --list|grep 3:on|awk '{print $1}'|grep -Ev 'sshd|crond|rsyslog|network|udev-post|postfix|sysstat'|awk '{print "chkconfig "$1" off"}'|bash
 #echo '>/etc/udev/rules.d/70-persistent-net.rules' >> /etc/rc.local
 #添加静态路由
 #route add -net 172.16.2.0 netmask 255.255.255.0 gw 192.168.1.2
+
 echo '*/5 * * * * /usr/sbin/ntpdate ntp1.aliyun.com >/dev/null 2>&1' > /var/spool/cron/root 
+
 #修改 Linux 系统打开最大文件数
 vi /etc/security/limits.conf
 #阿里云
@@ -16,14 +20,6 @@ root hard nofile 65535
 * soft nofile 65535
 * hard nofile 65535
 
-#内核优化 [~]
-vi /etc/sysctl.conf
-net.ipv4.tcp_syncookies = 1
-net.ipv4.tcp_tw_reuse = 1
-net.ipv4.tcp_tw_recycle = 0
-net.ipv4.tcp_fin_timeout = 30
-net.core.somaxconn = 40960
-#sysctl -p
 #安装必备软件
 yum -y install epel-release
 yum -y install curl wget lsof vim nethogs nmap expect telnet traceroute unzip zip htop tcpdump bind-utils iotop tree gcc net-tools bash-completion mtr ntpdate git psmisc
@@ -61,6 +57,16 @@ enabled=1
 nohup ./gogs web >/dev/null 2>&1 &
 #linux 切割大文件
 split -b 100m
+
+#内核优化 [~]
+vi /etc/sysctl.conf
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_tw_recycle = 0
+net.ipv4.tcp_fin_timeout = 30
+net.core.somaxconn = 40960
+#sysctl -p
+
 # systemctl 相关
 systemctl 是管制服务的主要工具,它整合了chkconfig 与 service功能于一体。
 systemctl is-enabled iptables.service   #查询防火墙是否开机启动
